@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Ernest Quiz</title>
+	</head>
+	<body>
+
+		<!-- HOME PAGE -->
+		<div id="homeScreen">
+
+			<h1>🎓 Ernest Quiz</h1>
+
+			<p>
+				Welcome to the Discrete Mathematics Quiz Challenge
+			</p>
+
+			<button id="startBtn">
+				Start Quiz
+			</button>
+
+		</div>
+
+		<!-- QUIZ PAGE -->
+		<div class="container" id="quizContainer">
+
+			<h2 id="question"></h2>
+
+			<h3 id="timer">Time Left: 10s</h3>
+
+			<div class="buttons">
+
+				<button id="btn1"></button>
+				<button id="btn2"></button>
+				<button id="btn3"></button>
+				<button id="btn4"></button>
+
+			</div>
+
+			<button id="nextBtn">
+				Next Question
+			</button>
+
+			<h3 id="feedback"></h3>
+
+			<h3 id="score">
+				Score: 0
+			</h3>
+
+		</div>
+
+		<!-- POPUP -->
+		<div id="popup">
+			🎉 Congratulations!
+		</div>
+
+		<!-- SOUNDS -->
+		<audio id="successSound" preload="auto">
+			<source src="sounds/success.mp3" type="audio/mp3" />
+		</audio>
+
+		<audio id="failSound" preload="auto">
+			<source src="sounds/fail.mp3" type="audio/mp3" />
+		</audio>
+
+		<script src="script.js"></script>
+
+		<script>
+			// Get audio elements
+			const successSound = document.getElementById('successSound');
+			const failSound = document.getElementById('failSound');
+
+			// Play helpers (reset to start so rapid repeats sound correctly)
+			function playSuccess() {
+				if (!successSound) return;
+				successSound.currentTime = 0;
+				successSound.volume = 0.7;
+				successSound.play().catch(() => {
+					// Play may fail if user hasn't interacted with the page yet.
+					// Optionally show UI hint to tap/click to enable sound.
+				});
+			}
+
+			function playFail() {
+				if (!failSound) return;
+				failSound.currentTime = 0;
+				failSound.volume = 0.7;
+				failSound.play().catch(() => {
+					// silent failure if autoplay blocked
+				});
+			}
+
+			// Call this from your quiz logic when an answer is evaluated
+			// Example: handleAnswer(true) for correct, handleAnswer(false) for incorrect
+			function handleAnswer(isCorrect) {
+				if (isCorrect) playSuccess();
+				else playFail();
+			}
+
+			// Optional: example wiring for buttons that have data-answer and data-correct attributes
+			// <button data-answer="true" data-correct="true">Answer A</button>
+			document.addEventListener('click', (e) => {
+				const btn = e.target.closest('[data-answer]');
+				if (!btn) return;
+				const correct = btn.dataset.correct === 'true';
+				handleAnswer(correct);
+			});
+		</script>
+
+	</body>
+</html>
